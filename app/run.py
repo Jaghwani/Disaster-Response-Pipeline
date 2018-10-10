@@ -40,16 +40,28 @@ def index():
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
+
+    # Create values for Y values in bar by grouping the messages based on genre
     genre_counts = df.groupby('genre').count()['message']
+    # Create the names for X values in bar of grouping the messages based on genre
     genre_names = list(genre_counts.index)
 
+
+    # Use categories data only without other features
     categories = df.drop(['original', 'genre','message','id'], axis =1)
-    categories_counts = categories.sum()
+    # Sum the values for each category and save the for Y values of the bar
+    categories_counts = categories.sum().sort_values(ascending=False)
+    # Create for the names of the categories and save them for X values bar
     categories_names = list(categories_counts.index)
     
+
+    # Find the messages are under genre Social only
     social = df[df['genre'] == 'social']
+    # Drop othere unneeded features
     social_droped = social.drop(['original', 'genre','message','id'], axis =1)
-    social_counts = social_droped.sum()
+    # Sum the categories values for genre Social
+    social_counts = social_droped.sum().sort_values(ascending=False)
+    # Create for the names of the categories and save them for X values bar
     social_names = list(social_counts.index)
     
     # create visuals
