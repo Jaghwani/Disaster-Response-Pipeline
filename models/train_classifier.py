@@ -26,6 +26,11 @@ import sys
 
 
 def load_data(database_filepath):
+	'''
+    Will load messages and categories from SQL database and create training and targets, with the name of targets list.
+    Inputs : Database contain the messages and targets categories.
+    Output : Two series for messages (X) and targets (Y) also list contain the names of targets (category_names).
+    '''
     engine = create_engine('sqlite:///'+ database_filepath)
     df = pd.read_sql_table('disaster_messages',engine)
     X = df['message']
@@ -36,6 +41,12 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+	'''
+    Will tokenize the messages and lemmatize them
+    Inputs : Messages text.
+    Output : List of words that explain the message.
+    '''
+
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -47,7 +58,12 @@ def tokenize(text):
     return clean_tokens
 
 def build_model():
-    
+ 	'''
+    Will create pipeline for build the model that contain transformation process and estimator
+    Inputs : no need to input.
+    Output : grid serach that contain pipeline transorm normal messages to format understood by NLP.
+    '''
+
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -63,12 +79,21 @@ def build_model():
     return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
+	'''
+    Will test and report how the model perform in data unseen yet.
+    Inputs : trained model, data unssen yet from messages (X) and targets (Y), and list contain the names of targets (category_names) 
+    Output : no returned values but there a report will show how the model perform.
+    '''
     y_pred = model.predict(X_test)
     print(classification_report(y_pred, Y_test, target_names = category_names))
 
 
 def save_model(model, model_filepath):
-
+	'''
+    Will save the model into a pickle file so we can use in predcation.
+    Inputs : the trained model and the name of pickle file what will warp the model. 
+    Output : no returned values but will save the model in the application folder.
+    '''
     pickle.dump(model, open(model_filepath, 'wb'))
 
 
